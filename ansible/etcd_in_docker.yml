@@ -6,5 +6,5 @@
     - name: install docker-py
       easy_install: name=docker-py 
     - name: run etcd in docker
-      docker: image=coreos/etcd ports=4001,7001 name=etcd detach=true
+      docker: image=coreos/etcd ports=4001:4001,7001:7001 name=etcd detach=true
 #vagrant@ubuntu-14:~$ ansible -i ansible/hosts -m docker -a 'image=ubuntu command="python -m SimpleHTTPServer" ports=8080,8000 name=web detach=true' localmachines
