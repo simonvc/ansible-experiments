@@ -1,0 +1,2 @@
+[localmachines]
+root@localhost docker_container="coreos/etcd"

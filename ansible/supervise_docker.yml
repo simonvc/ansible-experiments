@@ -1,0 +1,34 @@
+---
+- hosts: localmachines
+  tasks:
+    - name: install docker.io
+      apt: pkg=docker.io
+
+    - name: symlink docker.io to docker
+      file: path=/usr/bin/docker src=/usr/bin/docker.io state=link
+
+    - name: install setuptools
+      apt: pkg=python-setuptools state=present
+
+    - name: install docker-py
+      easy_install: name=docker-py 
+
+    - name: install supervisord
+      apt: pkg=supervisor state=present
+
+    - name: copy the supervisor conf file
+      copy: src=dockerd.conf dest=/etc/supervisor/conf.d/ owner=root group=root mode=644 backup=yes
+      register: supervisord_config
+
+    - name: restart supervisord
+      service: name=supervisor state=restarted
+      when: supervisord_config|changed
+
+    - name: ensure docker is stopped 
+      service: name=docker.io state=stopped
+
+    - name: remove docker.io from init.d
+      file: path=/etc/init.d/docker.io state=absent
+
+    - name: supervise dockerd
+      supervisorctl: name=dockerd state=restarted
